@@ -8,11 +8,11 @@ var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
 var SPREADSHEET_ID = "1xmWtwttaSUZ5vvCAfj3IzLvoVWK6mMzqfPcGjLdx6NU";
 var authorizeButton = document.getElementById("authorize_button");
 var signoutButton = document.getElementById("signout_button");
-
+var debug = true;
 let spreadsheet = {
   hourToRow: [],
   dayToColumn: []
-};
+}; 
 
 function handleClientLoad() {
   gapi.load("client:auth2", initClient);
@@ -26,7 +26,7 @@ function initClient() {
       scope: SCOPES
     })
     .then(
-      function() {
+      function () {
         // Listen for sign-in state changes.
         gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 
@@ -35,7 +35,7 @@ function initClient() {
         authorizeButton.onclick = handleAuthClick;
         signoutButton.onclick = handleSignoutClick;
       },
-      function(error) {
+      function (error) {
         document.getElementById("loading-screen").innerHTML = error.details;
         document.getElementById("content").style.display = "none";
       }
@@ -46,14 +46,15 @@ function spam() {
     getCell(generateRangeWithDate(new Date(), false));
   }
 }
+
 async function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
     document.getElementById("content").style.display = "block";
     document.getElementById("loading-screen").style.display = "none";
     await generateTimeArrays();
 
+
     let total = await getCell(generateRangeWithDate(new Date(), true));
-    console.log(total);
     document.getElementById("score").innerHTML = total.result.values[0][0];
     odScore = parseInt(total.result.values[0][0]);
     //kickoff
@@ -68,10 +69,10 @@ async function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = "none";
   }
 }
-function handleAuthClick(event) {
+function handleAuthClick() {
   gapi.auth2.getAuthInstance().signIn();
 }
-function handleSignoutClick(event) {
+function handleSignoutClick() {
   gapi.auth2.getAuthInstance().signOut();
 }
 function getMilValue(date) {
@@ -117,10 +118,12 @@ function addPointsRange(start, end) {
 }
 async function addPointsHour(date, points) {
   return new Promise(async r => {
-    console.log("adding " + points*clock.multiplier + " points with x"+clock.multiplier+" multiplier.");
+    updateUI();
+    console.log("adding " + points * clock.multiplier + " points with x" + clock.multiplier + " multiplier.");
     //return;
-    
-    points*=clock.multiplier;
+    $("button").prop("disabled", true);
+
+    points *= clock.multiplier;
     let range = generateRangeWithDate(date, false);
     let response = await getCell(range);
     let result = response.result;
@@ -134,6 +137,7 @@ async function addPointsHour(date, points) {
       values: result.values
     };
     await updateCell(range, body);
+    $("button").prop("disabled", false);
     r();
   });
 }
@@ -188,13 +192,13 @@ function updateCell(range, body) {
         valueInputOption: "USER_ENTERED",
         resource: body
       })
-      .then(response => {
+      .then(() => {
         r();
 
         //console.log(`${result.updatedCells} cells updated.`);
       })
       .catch(e => {
-        setTimeout(async()=>{
+        setTimeout(async () => {
           await updateCell(range, body);
           r();
         }, 10000);
@@ -203,7 +207,7 @@ function updateCell(range, body) {
 }
 
 function generateTimeArrays() {
-  return new Promise(function(re) {
+  return new Promise(function (re) {
     let ranges = ["Eric!A2:ZZZ2", "Eric!C1:C27"];
     gapi.client.sheets.spreadsheets.values
       .batchGet({
@@ -249,20 +253,24 @@ function generateTimeArrays() {
 }
 
 async function displayError(e) {
-  console.log(e);
   let startDate = new Date();
   while (new Date().getTime() - startDate.getTime() <= 10000) {
     document.getElementById("error").style.display = "flex";
-    document.getElementById("error").innerHTML =
-      e.result.error.status +
-      "\n\n retrying in " +
-      (10 - parseInt((new Date().getTime() - startDate.getTime()) / 1000)) +
-      " second(s)...";
+    let seconds = 10 - parseInt((new Date().getTime() - startDate.getTime()) / 1000);
+    if (e.result.error.status == undefined) {
+      document.getElementById("error").innerHTML = "Not connected to the internet. \nRetrying in " + seconds + " second(s)";
+    } else {
+      document.getElementById("error").innerHTML =
+        e.result.error.status +
+        "\n\n retrying in " + seconds +
+        " second(s)...";
+    }
+
     await sleep(50);
   }
 }
 function sleep(s) {
-  return new Promise(function(res) {
+  return new Promise(function (res) {
     setTimeout(res(), s);
   });
 }

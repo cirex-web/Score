@@ -93,19 +93,13 @@ function updateUI() {
     changeBackDropColor("white");
   }
 }
-
+ 
 async function quickAdd(event) {
   //console.log(event);
-  let buttons = document.getElementsByClassName("button-add");
-  for (let i = 0; i < buttons.length; i++) {
-    buttons[i].setAttribute("disabled", "disabled");
-  }
+
   odScore += parseInt(event.path[0].innerHTML.replace("+", ""));
-  updateUI();
-  await addPointsHour(new Date(), event.path[0].innerHTML.replace("+", ""));
-  for (let i = 0; i < buttons.length; i++) {
-    buttons[i].removeAttribute("disabled");
-  }
+  
+  addPointsHour(new Date(), event.path[0].innerHTML.replace("+", ""));
 }
 function changeBackDropColor(color) {
   try {
@@ -127,6 +121,10 @@ function updateClock() {
 
   clock.curTime = dif.slice(-2) + ":" + min.slice(-2) + ":" + sec.slice(-2);
   if (clock.curTime != clock.prevTime) {
+    clock.prevTime = clock.curTime;
+    updateUI();
+  }
+  if(rand(60)==0){
     if (clock.curTime.split(":")[1] != clock.prevTime.split(":")[1]) {
       let tempBonuses = 0;
       if (rand(40) == 0) {
@@ -151,9 +149,6 @@ function updateClock() {
       addPointsHour(new Date(), tempBonuses);
       clock.curPoints++;
     }
-
-    clock.prevTime = clock.curTime;
-    updateUI();
   }
 }
 
@@ -192,7 +187,7 @@ function stopClock() {
 
 async function startClock() {
   toggle.currentTime = 0;
-  document.body.webkitRequestFullscreen();
+  // document.body.webkitRequestFullscreen();
   toggle.play();
   document.getElementById("timer").style.opacity = 1;
   clock.stopC.style.display = "block";
