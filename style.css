@@ -1,0 +1,137 @@
+/* CSS files add styling rules to your content */
+
+.butt {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  /*   display: none; */
+}
+p {
+  text-align: center;
+  font-size: 50px;
+  margin: 0px;
+}
+
+#container {
+  position: relative;
+  height: auto;
+}
+
+#timer {
+  position: relative;
+  opacity: 0;
+  bottom: 65px;
+  transition: all 0.2s;
+
+  margin: 0px 0px 0px 0px;
+  text-align: center;
+  font-size: 50px;
+}
+#clock {
+  display: flex;
+}
+
+/* #clock-buttons-div {
+  width: 40%;
+  margin: 20px auto 0px auto;
+  display: flex;
+} */
+
+#clock-multiplier{
+  width:36%;
+  margin:0;
+}
+.clock-buttons {
+  width: 65%;
+  height: 100%;
+  font-size: 30px;
+  margin: 0;
+  outline: none;
+  background: transparent;
+}
+.clock-buttons:active {
+  border: none;
+
+  background-color: #e5ffe5;
+}
+body {
+  position: relative;
+  margin: 0px;
+  height: 100%;
+}
+.odometer {
+  width: 100%;
+}
+#bottom {
+  height: 20%;
+  background: aliceblue;
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+}
+
+.button-row {
+  display: flex;
+  height: 100%;
+  margin: auto;
+  width: 70%;
+}
+.button-add:hover {
+  background: black;
+  color: white;
+}
+.button-add {
+  background: transparent;
+  font-size: 40px;
+  height: 50%;
+  text-align: center;
+  transition: all 0.2s;
+  margin: auto 10px;
+  /* display: flex; */
+  /* margin: auto; */
+  width: 100%;
+  /* display: flex;*/
+}
+.bottom-tabs {
+  height: 100%;
+}
+
+.tabs {
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 30px;
+  background: aliceblue;
+}
+.tabs:hover {
+  background: #c3e3ff;
+}
+#tab-bar {
+  transform: translate(0, -100%);
+  position: absolute;
+  right: 0;
+}
+:fullscreen::backdrop {
+  background-color: white; /* dark blue */
+}
+
+#error {
+  display: none;
+  background: #ec7373cc;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  align-items: center;
+  color: white;
+  font-size: 50px;
+  justify-content: center;
+  
+  transition: all 0.2s;
+
+}
