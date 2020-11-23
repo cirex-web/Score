@@ -12,79 +12,58 @@ Next steps:
 
 -->
 <html style="height:100%">
-  <head>
-    <title>Score!</title>
-    <meta charset="utf-8" />
-    <link
-      rel="icon"
-      type="image/png"
-      href="https://cdn.glitch.com/e8442d5b-59f9-4b50-94d1-ea6471451e43%2F24749-8-up-arrow-image.png?v=1601934403458"
-    />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" type="text/css" href="odometer.css" />
-  </head>
-  <body>
-    <div id="loading-screen">
-      If you aren't Eric this site will probably not work
+
+<head>
+  <title>Score!</title>
+  <meta charset="utf-8" />
+  <link rel="icon" type="image/png"
+    href="https://cdn.glitch.com/e8442d5b-59f9-4b50-94d1-ea6471451e43%2F24749-8-up-arrow-image.png?v=1601934403458" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" type="text/css" href="odometer.css" />
+</head>
+
+<body>
+  <div class="view" id="loading-screen">
+    <div>
+      <span class="loading_anim"></span>
+      <div style="padding:10px 0px">
+        Loading... Please wait
+      </div>
     </div>
-    <button id="authorize_button" class="butt">Authorize</button>
-    <button id="signout_button" class="butt">Sign Out</button>
 
-    <div id="content" style="position: relative; min-height:600px; height:100%">
-      <p>Score Tracker</p>
-    <button id="full" onclick="full()" style="position:absolute; top:10px; left:10px">[]</button>
+  </div>
 
-      <!--Add buttons to initiate auth sequence and sign out-->
+  <button id="authorize_button" class="butt">Authorize</button>
+  <button id="signout_button" class="butt">Sign Out</button>
+  <button id="switch_view" class="butt" style="top:40px">Switch View</button>
 
+  <div class="view display" id="1">
+
+    <div id="timer" style="white-space: pre-wrap;">00:00:00</div>
+    <button id="clock-multiplier" class="clock-buttons">x1.25?</button>
+
+    <button id="start" class="clock-buttons">Start Clock!</button>
+    <button id="stop" class="clock-buttons">Stop and Log!</button>
+  </div>
+  <div class="view display" id="0">
+    <p>Score Tracker</p>
+    <button id="full" onclick="full()" class="butt" style="top:10px; left:10px">[]</button>
+
+    <div id="score-container">
       <div id="score" class="odometer">0</div>
-      <div id="timer" style="white-space: pre-wrap;">00:00:00</div>
-      <div id="text">
-        
-      </div>
-      <div id="bottom">
-        <div id="tab-bar">
-          <button id="clock-tab" class="tabs" onclick="openTab(event, 'clock')">
-            Clock
-          </button>
-          <button
-            id="quickadd-tab"
-            class="tabs"
-            onclick="openTab(event, 'quickadd')"
-          >
-            Quick-add
-          </button>
-        </div>
-      
-        <div id="clock" class="bottom-tabs" style="display:none">
-          <button id="clock-multiplier" class="clock-buttons">x1.25?</button>
 
-          <button id="start" class="clock-buttons">Start Clock!</button>
-          <button id="stop" class="clock-buttons">Stop and Log!</button>
-        </div>
-        <div id="quickadd" class="bottom-tabs" style="display:block">
-          <div class="button-row">
-<!--             <button class="button-add" onclick="spam()">spam</button>
- -->
-            <button class="button-add" >+5</button>
-            <button class="button-add" >+10</button>
-            <button class="button-add" >+20</button>
-          </div>
-        </div>
-      </div>
     </div>
-    <div id="error">
-      oof
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" defer></script>
-    <script src="sheetsAPI.js" defer></script>
-    <script src="script.js" defer onload="run()"></script>
 
-    <script
-      defer
-      src="https://apis.google.com/js/api.js"
-      onload="handleClientLoad()"
-      onreadystatechange="if (this.readyState === 'complete') this.onload()"
-    ></script>
-    <script src="https://github.hubspot.com/odometer/odometer.js"></script>
-  </body>
+
+  </div>
+  <div id="error"></div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" defer></script>
+  <script src="sheetsAPI.js" defer></script>
+  <script src="script.js" defer onload="run()"></script>
+
+  <script defer src="https://apis.google.com/js/api.js" onload="handleClientLoad()"
+    onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+  <script src="https://github.hubspot.com/odometer/odometer.js"></script>
+</body>
+
 </html>

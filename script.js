@@ -16,12 +16,12 @@ var clock = {
     //0 is start time
     //1 is cooldown in minutes
   },
-  bonusValid: function(name) {
+  bonusValid: function (name) {
     let b = this.bonuses[name];
     return new Date().getTime() - b[0].getTime() <= b[1] * 60000;
   }
 };
-
+let view = SCORE_SCREEN;
 var backDrop = document.createElement("style");
 document.head.appendChild(backDrop);
 //Maybe put these in clock
@@ -31,53 +31,74 @@ let toggle = new Audio(
   "https://cdn.glitch.com/e8442d5b-59f9-4b50-94d1-ea6471451e43%2FToggle.mp3?v=1601933702846"
 );
 function full() {
-  try{
-      let targetelement = document.body;
+  try {
+    let targetelement = document.body;
 
     targetelement.webkitRequestFullscreen();
 
-  }catch(e){
-    document.getElementById("text").innerHTML=e;
+  } catch (e) {
+    document.getElementById("text").innerHTML = e;
   }
 }
+function switchView(input = view) {
+  view = input;
+  $("#switch_view").prop("disabled", true);
+  $(".display").css("opacity", 0);
+  $(".display").css("z-index", 0);
+
+  setTimeout(async () => {
+    // $(".view").css("display", "none");
+
+    $("#switch_view").prop("disabled", false);
+
+    $("#" + view).css("opacity", 0);
+    $("#" + view).css("z-index", 1);
+
+    // $("#" + view).css("display", "block");
+
+    await sleep(100);
+    $("#" + view).css("opacity", 1);
+
+  }, 100);
+}
 function run() {
-  if (
-    typeof window.orientation !== "undefined" ||
-    navigator.userAgent.indexOf("IEMobile") !== -1
-  ) {
-    document.getElementById("score").style.fontSize = "100px";
-    document.getElementById("timer").style.fontSize = "30px";
-    document.getElementById("timer").style.bottom = "-25px";
-    let tabs = document.getElementsByClassName("tabs");
-    for (let i = 0; i < tabs.length; i++) {
-      tabs[i].style.fontSize = "10px";
-    }
-  }
+
+  $("#switch_view").click(() => {
+    view = 1 - view;
+    switchView();
+  });
+  switchView(0);
+
+  // if (
+  //   typeof window.orientation !== "undefined" ||
+  //   navigator.userAgent.indexOf("IEMobile") !== -1
+  // ) {
+  //   document.getElementById("score").style.fontSize = "100px";
+  //   document.getElementById("timer").style.fontSize = "30px";
+  //   document.getElementById("timer").style.bottom = "-25px";
+  //   let tabs = document.getElementsByClassName("tabs");
+  //   for (let i = 0; i < tabs.length; i++) {
+  //     tabs[i].style.fontSize = "10px";
+  //   }
+  // }
 
   clock.startC.onclick = startClock;
   clock.stopC.onclick = stopClock;
   clock.stopC.style.display = "none";
   toggle.crossOrigin = "anonymous";
 
-  let add = document.getElementsByClassName("button-add");
-  for (let i = 0; i < add.length; i++) {
-    add[i].onclick = event => {
-      quickAdd(event);
-    };
-  }
-  
-  document.getElementById("clock-multiplier").onclick = ()=>{
+
+  document.getElementById("clock-multiplier").onclick = () => {
     let button = document.getElementById("clock-multiplier");
-    if(!button.style.background||button.style.background=="transparent"){
+    if (!button.style.background || button.style.background == "transparent") {
       clock.multiplier = 1.25;
       button.style.background = "#00800054";
-    }else{
+    } else {
       clock.multiplier = 1;
       button.style.background = "transparent";
     }
   }
-  
-  openTab("", "clock");
+
 }
 
 function updateUI() {
@@ -93,18 +114,18 @@ function updateUI() {
     changeBackDropColor("white");
   }
 }
- 
+
 async function quickAdd(event) {
   //console.log(event);
 
   odScore += parseInt(event.path[0].innerHTML.replace("+", ""));
-  
+
   addPointsHour(new Date(), event.path[0].innerHTML.replace("+", ""));
 }
 function changeBackDropColor(color) {
   try {
     backDrop.sheet.deleteRule(0);
-  } catch (ignored) {}
+  } catch (ignored) { }
   backDrop.sheet.insertRule(
     ":fullscreen::backdrop {background-color: " + color + "; }"
   );
@@ -124,7 +145,7 @@ function updateClock() {
     clock.prevTime = clock.curTime;
     updateUI();
   }
-  if(rand(60)==0){
+  if (rand(60) == 0) {
     if (clock.curTime.split(":")[1] != clock.prevTime.split(":")[1]) {
       let tempBonuses = 0;
       if (rand(40) == 0) {
@@ -157,7 +178,7 @@ function rand(n) {
 }
 function stopClock() {
   //maybe change this to just points accrued because it's being kept track of anyways.
-  odScore += parseInt((Date.now() - clock.startTime.getTime()) / 60000*clock.multiplier);
+  odScore += parseInt((Date.now() - clock.startTime.getTime()) / 60000 * clock.multiplier);
   console.log(
     parseInt((Date.now() - clock.startTime.getTime()) / 60000),
     clock.curPoints
@@ -180,7 +201,7 @@ function stopClock() {
   //TODO also this
 
 
-  addPointsRange(clock.startTime, new Date(),clock.multiplier);
+  addPointsRange(clock.startTime, new Date(), clock.multiplier);
 
   toggle.play();
 }
@@ -199,22 +220,9 @@ async function startClock() {
     await sleep(30);
   }
 }
-function openTab(e, id) {
-  let tabs = document.getElementsByClassName("bottom-tabs");
-  console.log(tabs);
-  for (let i = 0; i < tabs.length; i++) {
-    let el = tabs[i];
-    if (el.id == id) {
-      document.getElementById(el.id + "-tab").style.background = "#95cdff";
-      el.style.display = "flex";
-    } else {
-      document.getElementById(el.id + "-tab").style.background = "aliceblue";
-      el.style.display = "none";
-    }
-  }
-}
+
 function sleep(s) {
-  return new Promise(function(res) {
+  return new Promise(function (res) {
     setTimeout(res, s);
   });
 }

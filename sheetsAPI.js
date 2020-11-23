@@ -14,6 +14,9 @@ let spreadsheet = {
   dayToColumn: []
 }; 
 
+var SCORE_SCREEN = 0;
+var TIMER_SCREEN = 1;
+
 function handleClientLoad() {
   gapi.load("client:auth2", initClient);
 }
@@ -36,33 +39,26 @@ function initClient() {
         signoutButton.onclick = handleSignoutClick;
       },
       function (error) {
-        document.getElementById("loading-screen").innerHTML = error.details;
-        document.getElementById("content").style.display = "none";
+        displayError(error.details);
       }
     );
 }
-function spam() {
-  for (let i = 0; i < 100; i++) {
-    getCell(generateRangeWithDate(new Date(), false));
-  }
-}
+
 
 async function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
-    document.getElementById("content").style.display = "block";
-    document.getElementById("loading-screen").style.display = "none";
     await generateTimeArrays();
-
-
     let total = await getCell(generateRangeWithDate(new Date(), true));
+    
     document.getElementById("score").innerHTML = total.result.values[0][0];
     odScore = parseInt(total.result.values[0][0]);
     //kickoff
+    document.getElementById("loading-screen").style.display = "none";
 
     authorizeButton.style.display = "none";
     signoutButton.style.display = "block";
   } else {
-    document.getElementById("content").style.display = "none";
+    //TODO: Make this sign in screen
     document.getElementById("loading-screen").style.display = "block";
 
     authorizeButton.style.display = "block";
@@ -251,17 +247,19 @@ function generateTimeArrays() {
       });
   });
 }
-
-async function displayError(e) {
+function displayError(e){
+  displayErrorSub(e.result.error.status);
+}
+async function displayErrorSub(e) {
   let startDate = new Date();
   while (new Date().getTime() - startDate.getTime() <= 10000) {
     document.getElementById("error").style.display = "flex";
     let seconds = 10 - parseInt((new Date().getTime() - startDate.getTime()) / 1000);
-    if (e.result.error.status == undefined) {
+    if (e == undefined) {
       document.getElementById("error").innerHTML = "Not connected to the internet. \nRetrying in " + seconds + " second(s)";
     } else {
       document.getElementById("error").innerHTML =
-        e.result.error.status +
+        e +
         "\n\n retrying in " + seconds +
         " second(s)...";
     }
